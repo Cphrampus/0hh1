@@ -2,24 +2,26 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 int main(int argc, const char *argv[]){
-	system("clear;stty raw");
+	system("clear; stty raw");
 	int i;
-	for (i = 0; i < 100; i++){
-		fprintf(stderr, "x");
+	for (i = 0; i < 10; i++){
+		fprintf(stdout, "x");
 	}
-	fprintf(stderr, "this is a message");
-	//for (i = 0; i < strlen("this is a message"); i++){
-	//	fprintf(stderr, "\b");
-	//}
+	fprintf(stdout, "\n");
+	fprintf(stdout, "this is a message");
 	system("sleep 3");
-	fprintf(stderr,"\r");
-	//for (i = 0; i < 100; i++){
-	//fprintf(stderr, "\b");
-	//}
-	for (i = 0; i < 100; i++){
-		fprintf(stderr, "+");
+	fprintf(stdout, "\033[F");
+	for (i = 0; i < strlen("this is a message"); i++){
+		fprintf(stdout, "\b");
+	}
+	system("sleep 3");
+	//fprintf(stdout,"\r");
+	for (i = 0; i <= 10; i++){
+		fprintf(stdout, "\b");
+	}
+	for (i = 0; i < 10; i++){
+		fprintf(stdout, "+");
 	}
 	system("sleep 3");
 	system("stty cooked");
