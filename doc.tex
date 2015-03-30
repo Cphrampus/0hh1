@@ -1,0 +1,244 @@
+
+\documentclass{article} 
+\usepackage{listings,mdwlist,fullpage, multirow} 
+\usepackage[table]{xcolor}
+\author{}\date{}\title{CS/240/Project/?}
+\begin{document}
+\maketitle
+\newcommand{\C}[1]{\lstinline[language=C,basicstyle=\ttfamily]!#1!}
+\lstset{
+  tabsize=2,  columns=fullflexible,  basicstyle=\ttfamily,
+  keywordstyle=\bfseries,  commentstyle=\rmfamily\itshape,
+  mathescape=true,  showstringspaces=false,  showspaces=false}
+
+\vspace*{-10mm}
+\noindent
+
+\textbf{DUE: Some point, I don't know, we'll let you know, just work on it}
+
+\medskip
+\noindent
+Copy the initial files, from
+\begin{lstlisting}
+	/homes/cs240/somelab/lab.tar.gz
+\end{lstlisting}
+you know the deal.
+
+\section{Introduction}
+The goal of this lab is to work on problem solving skills, as well as translating the algorithm into code.
+The idea is that by understanding and analyzing the game and its rules, you will be able to implement 
+a solver for the game 0hh1 which can:
+\begin{itemize}
+\item Take in a board of a given size,
+\item Determine the unique solution of the board
+\item Print the completed board
+\end{itemize}
+
+\section{Game Rules}
+0hh1 is a game played in a square board with a even dimension(usually from 4 and 10, 
+though larger boards are possible) with red and blue tiles in which, 
+similar to sudoku, the player must fill in the board by following a few simple rules:
+\begin{enumerate}
+\item There cannot be three of the same color next to each other in a row
+\item There cannot be three of the same color next to each other in a column
+\item There must be an equal number of each color in every row
+\item There must be an equal number of each color in every column
+\item No two rows can be the same
+\item No two columns can be the same
+\end{enumerate}
+
+\section{Game example}
+Let's look at a simple 4x4 board to get a feel for how the game works:
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\cellcolor{blue} & & & 				\\ \hline
+ & \cellcolor{red} & & 				\\ \hline
+ & & & 						\\ \hline
+ & \cellcolor{red} & & \cellcolor{red} 	\\ \hline
+\end{tabular}
+\end{center}
+
+\subsection{Three in a row/column}
+The first, arbitrarily choosen, rule we want to check is that there are no places where 
+three of the same color are together.
+
+We have this board:
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\cellcolor{blue} & & & 				\\ \hline
+ & \cellcolor{red} & & 				\\ \hline
+ & & & 						\\ \hline
+ & \cellcolor{red} & & \cellcolor{red} 	\\ \hline
+\end{tabular}
+\end{center}
+
+Let's look at the last row:
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+ & \cellcolor{red} & & \cellcolor{red}	 \\ \hline
+\end{tabular}
+\end{center}
+
+Notice there there are two of the same color separated by a blank square.
+Therefore, the square in between them must be blue. Now we have:
+
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\cellcolor{blue} & & & 							\\ \hline
+ & \cellcolor{red} & & 							\\ \hline
+ & & & 									\\ \hline
+ & \cellcolor{red} & \cellcolor{blue} & \cellcolor{red} 	\\ \hline
+\end{tabular}
+\end{center}
+
+But if we look at the second column:
+
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+ \\ \hline
+ \cellcolor{red} \\ \hline
+  \\ \hline
+\cellcolor{red}\\ \hline
+\end{tabular}
+\end{center}
+
+We see that there is another place which there is only one possiblity.
+Thus:
+
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\cellcolor{blue} & & & 							\\ \hline
+ & \cellcolor{red} & & 							\\ \hline
+ & \cellcolor{blue} & & 						\\ \hline
+ & \cellcolor{red} & \cellcolor{blue} & \cellcolor{red} 	\\ \hline
+\end{tabular}
+\end{center}
+
+\subsection{Equal Numbers}
+Next, we will make sure that the rows and columns have an equal number of each color.
+We have a few spaces we can fill because there are already enough of one color.
+First, we fill in the last row:
+
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\cellcolor{blue} & & & 							\\ \hline
+ & \cellcolor{red} & & 							\\ \hline
+ & \cellcolor{blue} & & 						\\ \hline
+\cellcolor{blue} & \cellcolor{red} & \cellcolor{blue} & \cellcolor{red} 	\\ \hline
+\end{tabular}
+\end{center}
+
+Next, the second column:
+
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\cellcolor{blue} & \cellcolor{blue} & & 							\\ \hline
+ & \cellcolor{red} & & 							\\ \hline
+ & \cellcolor{blue} & & 						\\ \hline
+\cellcolor{blue} & \cellcolor{red} & \cellcolor{blue} & \cellcolor{red} 	\\ \hline
+\end{tabular}
+\end{center}
+
+This opens up many spaces we can now fill the same way to finish this board:
+
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\cellcolor{blue} & \cellcolor{blue} & \cellcolor{red} & \cellcolor{red}	\\ \hline
+\cellcolor{red} & \cellcolor{red} & \cellcolor{blue} & \cellcolor{blue}	\\ \hline
+\cellcolor{red} & \cellcolor{blue} & \cellcolor{red} & \cellcolor{blue}	\\ \hline
+\cellcolor{blue} & \cellcolor{red} & \cellcolor{blue} & \cellcolor{red} 	\\ \hline
+\end{tabular}
+\end{center}
+
+\subsection{No two rows or columns are the same}
+The 4x4 board used in the previous example was not complicated enough to need to check for this rule,
+but this is an example of when it may be used:
+
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\cellcolor{blue} &  &  & \cellcolor{red}	\\ \hline
+\cellcolor{red} &  &  & \cellcolor{blue}	\\ \hline
+\cellcolor{red} & \cellcolor{blue} & \cellcolor{red} & \cellcolor{blue}	\\ \hline
+\cellcolor{blue} & \cellcolor{red} & \cellcolor{blue} & \cellcolor{red} 	\\ \hline
+\end{tabular}
+\end{center}
+
+The first and last rows have the same ends, but the last row is filled in.
+By this rule, the first row must be:
+
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\cellcolor{blue} & \cellcolor{blue} & \cellcolor{red} & \cellcolor{red}	\\ \hline
+\cellcolor{red} &  &  & \cellcolor{blue}	\\ \hline
+\cellcolor{red} & \cellcolor{blue} & \cellcolor{red} & \cellcolor{blue}	\\ \hline
+\cellcolor{blue} & \cellcolor{red} & \cellcolor{blue} & \cellcolor{red} 	\\ \hline
+\end{tabular}
+\end{center}
+
+Then the other two spaces can be filled in by rule 2.
+
+
+NOTE: Not every board can be solved by going through each function only once, especially as the boards grow larger.
+
+Your program should be called \texttt{0hh1} and should have to
+following call signature:
+
+\begin{verbatim} 
+0hh1
+\end{verbatim} 
+
+\section{Format}
+You may solve the problem however you wish, but, for the sake of testing, 
+the format of the input and output should follow the standards as follows:
+
+\subsection{Input}
+The input given to your program will come from stdin and will be of the form:
+\begin{verbatim}
+B   
+ R  
+    
+ R R
+\end{verbatim}
+
+Containing B for Blue, R for Red, and a space for empty, which may or may not contain newlines
+to improve readability.
+
+\subsection{Output}
+Your output should include, but is not necessarily limited to, the final board of the form:
+\begin{verbatim}
++-+-+-+-+
+|B|B|R|R|
++-+-+-+-+
+|R|R|B|B|
++-+-+-+-+
+|R|B|R|B|
++-+-+-+-+
+|B|R|B|R|
++-+-+-+-+
+\end{verbatim}
+
+You may have more in your output if you wish, but your output MUST, at least,
+contain the board in the correct format. 
+
+NOTE: Any additional output is up to you, and should be useful to the user, so you should still 
+remove print statements used for debugging,
+
+\subsection*{Turning in}
+
+Please submit your project directory in the usual fashion:
+\begin{lstlisting}
+	turnin -c cs240 -p ...
+\end{lstlisting}
+
+\end{document}
